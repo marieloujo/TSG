@@ -4,19 +4,36 @@
             <div class="">
                 <div class="card-body">
                     <div class="align-self-center">
-                        <form class="row g-2 align-items-end justify-content-end">
+                        <form class="row g-2 align-items-end justify-content-end" [formGroup]="reportForm"
+                            (ngSubmit)="submitForm()">
                             <div class="col-auto">
                                 <label for="start-date" class="mb-1">Date Début</label>
-                                <input type="date" class="form-control" id="start-date" placeholder="Date Début">
+                                <input type="date" class="form-control" id="start-date" placeholder="Date Début"
+                                    formControlName="start_date">
+                                <div *ngIf="reportForm.get('start_date')?.invalid && reportForm.get('start_date')?.touched"
+                                    class="text-danger">
+                                    <small *ngIf="reportForm.get('start_date')?.errors?.['required']">La date de début
+                                        est requise.</small>
+                                    <small *ngIf="reportForm.get('start_date')?.errors?.['pattern']">Le format de la
+                                        date est invalide.</small>
+                                </div>
                             </div>
                             <div class="col-auto">
                                 <label for="end-date" class="mb-1">Date Fin</label>
-                                <input type="date" class="form-control" id="end-date" placeholder="Date Fin">
+                                <input type="date" class="form-control" id="end-date" placeholder="Date Fin"
+                                    formControlName="end_date">
+                                <div *ngIf="reportForm.get('end_date')?.invalid && reportForm.get('end_date')?.touched"
+                                    class="text-danger">
+                                    <small *ngIf="reportForm.get('end_date')?.errors?.['required']">La date de fin est
+                                        requise.</small>
+                                    <small *ngIf="reportForm.get('end_date')?.errors?.['pattern']">Le format de la date
+                                        est invalide.</small>
+                                </div>
                             </div>
                             <div class="col-auto">
-                                <a class="btn card-bg text-secondary shadow-sm">
+                                <button type="submit" class="btn card-bg text-secondary shadow-sm">
                                     <i class="iconoir-filter-alt"></i> Filtrer
-                                </a>
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -25,7 +42,27 @@
         </div> <!-- end col -->
     </div>
 
-    <div class="row">
+    <div *ngIf="isLoading; else contentLoader" class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <ng-template #contentLoader>
+        <div class="row justify-content-center my-5 py-5 card-bg">
+            <div class="col-lg-2 text-center">
+                <img src="assets/images/extra/card/find.png" alt="" class="img-fluid">
+            </div>
+            <div class="col-lg-4 align-self-center">
+                <div class="error-content text-center">
+                    <h1 class="fw-bold display-5">Aucun Rapport!</h1>
+                    <h4 class=" mb-3">Sélectionner une période pour visualiser les rapports</h4>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <div class="row" *ngIf="revenues">
         <div class="col-12">
             <div class="card">
                 <div class="card-body bg-black">
@@ -34,10 +71,14 @@
                             <img src="assets/images/logo-sm.png" alt="logo-small" class="logo-sm me-1" height="70">
                         </div>
                         <div class="col-8 text-end align-self-center">
-                            <h5 class="mb-1 fw-semibold text-white"><span class="text-muted">Rapport N°:</span>
-                                #BBN2351D458</h5>
-                            <h5 class="mb-0 fw-semibold text-white"><span class="text-muted">
-                                    Date:</span> 20/07/2024</h5>
+                            <h5 class="mb-1 fw-semibold text-white">
+                                <span class="text-muted">Rapport du:</span>
+                                {{ reportForm.get('start_date')?.value | date: 'dd/MM/yyyy' }}
+                            </h5>
+                            <h5 class="mb-0 fw-semibold text-white">
+                                <span class="text-muted">au:</span>
+                                {{ reportForm.get('end_date')?.value | date: 'dd/MM/yyyy' }}
+                            </h5>
                         </div>
                     </div>
                 </div><!--end card-body-->
@@ -48,30 +89,25 @@
                                 <table class="table table-bordered mb-0">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Session</th>
-                                            <th>Joueur</th>
-                                            <th>Tarif (/h)</th>
-                                            <th>Durée</th>
+                                            <th>Date</th>
+                                            <th>Sessions</th>
+                                            <th>Durée Moy.</th>
                                             <th>Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <h5 class="mt-0 mb-1 fs-14">Project Design</h5>
-                                                <p class="mb-0 text-muted">It is a long established fact
-                                                    that a reader will be distracted.</p>
-                                            </td>
+                                        <tr *ngFor="let revenue of revenues?.details">
+                                            <td>{{ revenue.date }}</td>
                                             <td>Kevyn ODJO</td>
                                             <td>200<sup>F</sup></td>
                                             <td class="fw-medium">2h</td>
-                                            <td>400<sup>F</sup></td>
+                                            <td>{{ revenue.revenue }}<sup>F</sup></td>
                                         </tr>
 
                                         <tr class="">
                                             <th colspan="1" class="border-0"></th>
                                             <td colspan="3" class="border-0 fs-14"><b>Total</b></td>
-                                            <td class="border-0 fs-14"><b>400<sup>F</sup></b></td>
+                                            <td class="border-0 fs-14"><b>{{ revenues.total_revenue }}<sup>F</sup></b></td>
                                         </tr>
                                     </tbody>
                                 </table><!--end table-->
@@ -90,5 +126,5 @@
                 </div>
             </div>
         </div> <!-- end col -->
-    </div> <!-- end row -->
+    </div>
 </div>

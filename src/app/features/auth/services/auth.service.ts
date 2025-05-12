@@ -17,7 +17,7 @@ export class AuthService {
     private tokenService: TokenService) { }
 
   login(body: LoginRequest): Observable<LoginResponse> {
-    return this.httpClientService.post(`${this.baseEndpoint}/login`, body)
+    return this.httpClientService.post(`${this.baseEndpoint}/login/`, body)
   }
 
   logout(): Observable<any> {

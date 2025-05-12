@@ -29,7 +29,7 @@ const routes: Routes = [
     //   },
     //   { path: '', redirectTo: 'app', pathMatch: 'full' }
     ],
-    // canActivate: [AuthGuard]
+    canActivate: [AuthGuard]
   }
 ];
 

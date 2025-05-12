@@ -8,15 +8,13 @@
     </div>
 </div>
 <div class="card-body pt-0">
-    <form class="my-4" [formGroup]="loginForm" (submit)="login()">
+    <form class="my-4 needs-validation" [formGroup]="loginForm" (submit)="login()">
         <div class="form-group mb-2">
             <label class="form-label" for="username">Username</label>
             <input type="text" class="form-control" id="username" name="username" placeholder="Enter username"
                 formControlName="username">
             <app-form-error [control]="username"></app-form-error>
-            @if (errorMessage) {
-                <div class="invalid-feedback">{{ errorMessage }}</div>
-            }
+            <div class="invalid-feedback">{{ errorMessage }}</div>
         </div>
 
         <div class="form-group">

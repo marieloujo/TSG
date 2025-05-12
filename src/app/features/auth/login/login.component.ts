@@ -65,7 +65,7 @@ export class LoginComponent {
 
   private handleFormErrors(error: any, status: number): void {
     this.errorMessage = null;
-    if (status === 401) {
+    if (status === 400) {
       this.errorMessage = "Email ou mot de passe incorrect"
     }
     else if (status == 422) {

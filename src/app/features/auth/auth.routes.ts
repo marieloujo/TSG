@@ -9,7 +9,7 @@ const routes: Routes = [
     path: '',
     component: AuthComponent,
     children: [
-      { path: 'login', component: LoginComponent /*, canActivate: [AuthGuardInverse] */ },
+      { path: 'login', component: LoginComponent , canActivate: [AuthGuardInverse] },
       { path: '', redirectTo: 'login', pathMatch: 'full' }
     ],
   }
